@@ -35,3 +35,4 @@ namespace MediatR_API_Example.Controllers
         }
     }
 }
+
