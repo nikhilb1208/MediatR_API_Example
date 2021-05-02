@@ -10,6 +10,9 @@ namespace MediatR_API_Example.Features.User
             CreateMap<Domain.User, User>().ReverseMap();
 
             CreateMap<Domain.Sex, Sex>().ReverseMap();
+
+            CreateMap<Domain.User, AddUser.Command>().ReverseMap();
+            CreateMap<Domain.User, UpdateUser.Command>().ReverseMap();
         }
     }
 }

@@ -33,13 +33,49 @@ namespace MediatR_API_Example.Features.User
         /// <summary>
         /// Add User Record
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="command">Add User Command</param>
         /// <returns>Added User Record</returns>
-        [HttpPost("", Name = "Add User Record")]
+        [HttpPost("User", Name = "Add User Record")]
         [ProducesResponseType(typeof(User), 200)]
         public async Task<ActionResult<User>> Create(
             [FromBody] AddUser.Command command)
         {
+            var result = await _mediator.Send(command);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Update User Record
+        /// </summary>
+        /// <param name="id">UserId</param>
+        /// <param name="command">Update User Parameters</param>
+        /// <returns>Updated User Record</returns>
+        [HttpPut("User/{id}", Name = "Update User Record")]
+        [ProducesResponseType(typeof(User), 200)]
+        public async Task<ActionResult<User>> Update(
+            [FromRoute] int id,
+            [FromBody] UpdateUser.Command command)
+        {
+            command.Id = id;
+            var result = await _mediator.Send(command);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Update User Record
+        /// </summary>
+        /// <param name="id">UserId</param>
+        /// <param name="command">Delete User Parameters</param>
+        /// <returns>Delete User Record</returns>
+        [HttpDelete("User/{id}", Name = "Delete User Record")]
+        [ProducesResponseType(typeof(User), 200)]
+        public async Task<ActionResult<User>> Delete(
+            [FromRoute] int id,
+            [FromBody] DeleteUser.Command command)
+        {
+            command.Id = id;
             var result = await _mediator.Send(command);
 
             return Ok(result);

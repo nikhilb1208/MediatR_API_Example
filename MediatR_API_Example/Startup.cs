@@ -30,7 +30,10 @@ namespace MediatR_API_Example
 
             services.AddControllersWithViews();
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(type => type.ToString());
+            });
 
             services.AddDbContext<IExampleDataContext, ExampleDataContext>(
                 options => options.UseSqlServer(

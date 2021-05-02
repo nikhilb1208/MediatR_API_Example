@@ -13,10 +13,11 @@ using System.Threading.Tasks;
 
 namespace MediatR_API_Example.Features.User
 {
-    public static class AddUser
+    public static class UpdateUser
     {
         public class Command : IRequest<User>
         {
+            public int Id { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public int SexId { get; set; }
@@ -26,6 +27,8 @@ namespace MediatR_API_Example.Features.User
         {
             public CommandValidator()
             {
+                RuleFor(x => x.Id).GreaterThan(0);
+
                 RuleFor(x => x.FirstName)
                     .MaximumLength(25)
                     .NotEmpty();
@@ -54,10 +57,10 @@ namespace MediatR_API_Example.Features.User
             {
                 var user = _mapper.Map<Domain.User>(request);
 
-                return await CreateUser(request, user, cancellationToken);
+                return await UpdateUser(request, user, cancellationToken);
             }
 
-            private async Task<User> CreateUser(Command request, Domain.User user, CancellationToken cancellationToken)
+            private async Task<User> UpdateUser(Command request, Domain.User user, CancellationToken cancellationToken)
             {
                 await UserBusinessRules(request, cancellationToken);
 
@@ -68,13 +71,15 @@ namespace MediatR_API_Example.Features.User
                 if (duplicate != null)
                     throw new Exception("User Already Exists.");
 
-                var newUser = await _context.User.AddAsync(user, cancellationToken);
+                var currentUser = await _context.User.SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+
+                _mapper.Map(request, currentUser);
 
                 await _context.SaveChangesAsync(cancellationToken);
 
                 var record = await _context.User
                                             .AsNoTracking()
-                                            .Where(x => x.Id == newUser.Entity.Id)
+                                            .Where(x => x.Id == currentUser.Id)
                                             .ProjectTo<User>(_mapper.ConfigurationProvider)
                                             .FirstOrDefaultAsync(cancellationToken);
 
