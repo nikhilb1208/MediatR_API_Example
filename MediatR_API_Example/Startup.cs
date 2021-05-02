@@ -1,3 +1,5 @@
+using FluentValidation.AspNetCore;
+using MediatR;
 using MediatR_API_Example.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,9 +22,18 @@ namespace MediatR_API_Example
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMediatR(typeof(Startup).Assembly)
+                .AddAutoMapper(typeof(Startup).Assembly)
+                .AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(typeof(Startup).Assembly))
+                .ConfigureApiBehaviorOptions(options => { options.SuppressModelStateInvalidFilter = true; });
+
             services.AddControllersWithViews();
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(type => type.ToString());
+            });
 
             services.AddDbContext<IExampleDataContext, ExampleDataContext>(
                 options => options.UseSqlServer(
