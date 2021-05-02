@@ -1,6 +1,8 @@
 ﻿using MediatR_API_Example.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MediatR_API_Example.Infrastructure
 {
@@ -8,6 +10,7 @@ namespace MediatR_API_Example.Infrastructure
     {
         public ExampleDataContext(DbContextOptions<ExampleDataContext> options) : base(options)
         { }
+
         public DbSet<User> User { get; set; }
         public DbSet<Sex> Sex { get; set; }
 

@@ -22,10 +22,25 @@ namespace MediatR_API_Example.Features.User
         /// </summary>
         /// <returns>List of users</returns>
         [HttpGet("Users", Name = "Get Users")]
-        [ProducesResponseType(typeof(IReadOnlyList<User>),200)]
+        [ProducesResponseType(typeof(IReadOnlyList<User>), 200)]
         public async Task<ActionResult<IReadOnlyList<User>>> Get()
         {
             var result = await _mediator.Send(new GetUsers.Query());
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Add User Record
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns>Added User Record</returns>
+        [HttpPost("", Name = "Add User Record")]
+        [ProducesResponseType(typeof(User), 200)]
+        public async Task<ActionResult<User>> Create(
+            [FromBody] AddUser.Command command)
+        {
+            var result = await _mediator.Send(command);
 
             return Ok(result);
         }
